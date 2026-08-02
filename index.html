@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="id" data-theme="dark" data-mode="focus">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5">
+<title>Fokusin - Timer Pomodoro</title>
+<meta name="description" content="Timer pomodoro simpel buat yang gampang kedistrak. Offline, tanpa akun, tanpa iklan.">
+<meta name="theme-color" content="#0B0B0C">
+<meta name="color-scheme" content="dark light">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fokusin">
+<meta name="mobile-web-app-capable" content="yes">
+
+<meta property="og:title" content="Fokusin - Timer Pomodoro">
+<meta property="og:description" content="Timer pomodoro simpel buat yang gampang kedistrak. Offline, tanpa akun, tanpa iklan.">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&display=swap">
+<link rel="stylesheet" href="css/style.css?v=5">
+</head>
+<body>
+
+<div class="fill" id="fill" aria-hidden="true"></div>
+<div class="hairline" id="hairline" aria-hidden="true"></div>
+
+<div class="app">
+
+  <header class="bar">
+    <div class="brand">
+      <span class="brand__word">fokusin</span>
+      <span class="brand__dot" aria-hidden="true"></span>
+    </div>
+    <div class="bar__right">
+      <button class="chip" id="streakChip" type="button" aria-label="Buka statistik">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2s.6 3.2-1.6 5.5C9.2 9.8 7 11.4 7 14.5A5.5 5.5 0 0 0 12.5 20 5.5 5.5 0 0 0 18 14.5c0-2.4-1.2-4-2.3-5.3-.3 1-.9 1.8-1.7 2.3.4-2.9-.4-6.7-1-9.5Z"/></svg>
+        <span id="streakValue">0</span>
+      </button>
+      <button class="iconbtn" id="btnStats" type="button" aria-label="Statistik">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="17" rx="1"/></svg>
+      </button>
+      <button class="iconbtn" id="btnSettings" type="button" aria-label="Setelan">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5Zm8.4 3.5c0-.5-.05-1-.13-1.47l2.03-1.56-2-3.46-2.4.96a8.3 8.3 0 0 0-2.55-1.48L14.9 2h-4l-.45 2.99c-.92.33-1.78.83-2.54 1.48l-2.4-.96-2 3.46 2.03 1.56a8.6 8.6 0 0 0 0 2.94L3.5 15.03l2 3.46 2.4-.96c.76.65 1.62 1.15 2.55 1.48L10.9 22h4l.45-2.99a8.3 8.3 0 0 0 2.55-1.48l2.4.96 2-3.46-2.03-1.56c.08-.48.13-.97.13-1.47Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <nav class="modes" id="modes" role="tablist" aria-label="Mode timer">
+    <span class="modes__pill" id="modePill" aria-hidden="true"></span>
+    <button role="tab" type="button" data-mode="focus" aria-selected="true">Fokus</button>
+    <button role="tab" type="button" data-mode="short" aria-selected="false">Rehat</button>
+    <button role="tab" type="button" data-mode="long" aria-selected="false">Rehat Panjang</button>
+  </nav>
+
+  <main class="stage">
+    <p class="eyebrow" id="eyebrow">Gas, satu sesi dulu</p>
+
+    <div class="clock" id="clock" role="timer" aria-live="off">
+      <span class="clock__d" data-i="0">2</span><span class="clock__d" data-i="1">5</span><span class="clock__sep">:</span><span class="clock__d" data-i="2">0</span><span class="clock__d" data-i="3">0</span>
+    </div>
+    <span class="sr-only" id="clockSr" aria-live="polite"></span>
+
+    <div class="rounds">
+      <span class="rounds__dots" id="roundDots"></span>
+      <span class="rounds__label" id="roundLabel">Sesi 1 dari 4</span>
+    </div>
+
+    <label class="task">
+      <span class="sr-only">Tugas yang sedang dikerjakan</span>
+      <input id="taskInput" type="text" maxlength="60" placeholder="lagi ngerjain apa?" autocomplete="off" enterkeyhint="done">
+    </label>
+  </main>
+
+  <div class="controls">
+    <button class="ghost" id="btnReset" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 1 2.3 5.7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M4 5v5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Ulang</span>
+    </button>
+
+    <button class="primary" id="btnStart" type="button">
+      <span id="btnStartLabel">Mulai</span>
+    </button>
+
+    <button class="ghost" id="btnSkip" type="button">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l9 7-9 7V5Z"/><rect x="16" y="5" width="3" height="14" rx="1"/></svg>
+      <span>Lewati</span>
+    </button>
+  </div>
+
+  <footer class="foot">
+    <div class="strip">
+      <div class="strip__item"><b id="statToday">0m</b><small>hari ini</small></div>
+      <div class="strip__item"><b id="statSessions">0</b><small>sesi</small></div>
+      <div class="strip__item"><b id="statTotal">0j</b><small>total</small></div>
+    </div>
+    <p class="credit">
+      <a href="https://alfindigital.com" target="_blank" rel="noopener noreferrer">@alfindigital</a>
+      <span class="credit__sep" aria-hidden="true">&middot;</span>
+      <span>made by Opus 5</span>
+    </p>
+  </footer>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ============ SHEET: SETELAN ============ -->
+<div class="scrim" id="scrim" hidden></div>
+
+<section class="sheet" id="sheetSettings" hidden aria-labelledby="settingsTitle">
+  <div class="sheet__grab" aria-hidden="true"></div>
+  <div class="sheet__head">
+    <h2 id="settingsTitle">Setelan</h2>
+    <button class="iconbtn" data-close type="button" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="sheet__body">
+
+    <p class="label">Durasi</p>
+    <div class="rows">
+      <div class="row"><span>Fokus</span><span class="stepper"><button type="button" data-step="focusMin:-1" aria-label="Kurangi">−</button><b id="valFocusMin">25</b><button type="button" data-step="focusMin:1" aria-label="Tambah">+</button><i>mnt</i></span></div>
+      <div class="row"><span>Rehat</span><span class="stepper"><button type="button" data-step="shortMin:-1" aria-label="Kurangi">−</button><b id="valShortMin">5</b><button type="button" data-step="shortMin:1" aria-label="Tambah">+</button><i>mnt</i></span></div>
+      <div class="row"><span>Rehat panjang</span><span class="stepper"><button type="button" data-step="longMin:-1" aria-label="Kurangi">−</button><b id="valLongMin">15</b><button type="button" data-step="longMin:1" aria-label="Tambah">+</button><i>mnt</i></span></div>
+      <div class="row"><span>Sesi sebelum rehat panjang</span><span class="stepper"><button type="button" data-step="rounds:-1" aria-label="Kurangi">−</button><b id="valRounds">4</b><button type="button" data-step="rounds:1" aria-label="Tambah">+</button><i>sesi</i></span></div>
+    </div>
+
+    <p class="label">Otomatis</p>
+    <div class="rows">
+      <div class="row"><span>Auto mulai rehat</span><button class="switch" type="button" data-toggle="autoBreak" role="switch" aria-checked="false"><i></i></button></div>
+      <div class="row"><span>Auto mulai fokus</span><button class="switch" type="button" data-toggle="autoFocus" role="switch" aria-checked="false"><i></i></button></div>
+    </div>
+
+    <p class="label">Suara &amp; getar</p>
+    <div class="rows">
+      <div class="row"><span>Alarm</span>
+        <span class="segs" id="soundSegs">
+          <button type="button" data-sound="bell">Denting</button>
+          <button type="button" data-sound="knock">Ketuk</button>
+          <button type="button" data-sound="rise">Naik</button>
+          <button type="button" data-sound="none">Bisu</button>
+        </span>
+      </div>
+      <div class="row"><span>Volume</span><input class="range" id="volRange" type="range" min="0" max="100" step="5" aria-label="Volume alarm"></div>
+      <div class="row"><span>Getar saat selesai</span><button class="switch" type="button" data-toggle="vibrate" role="switch" aria-checked="false"><i></i></button></div>
+    </div>
+
+    <p class="label">Tampilan</p>
+    <div class="rows">
+      <div class="row"><span>Tema</span>
+        <span class="segs" id="themeSegs">
+          <button type="button" data-theme="dark">Gelap</button>
+          <button type="button" data-theme="light">Terang</button>
+          <button type="button" data-theme="system">Sistem</button>
+        </span>
+      </div>
+      <div class="row"><span>Layar tetap nyala</span><button class="switch" type="button" data-toggle="wakeLock" role="switch" aria-checked="false"><i></i></button></div>
+    </div>
+
+    <p class="label">Notifikasi</p>
+    <div class="rows">
+      <div class="row"><span>Kabari kalau sesi kelar</span><button class="switch" type="button" data-toggle="notify" role="switch" aria-checked="false"><i></i></button></div>
+    </div>
+    <p class="note" id="notifyNote">Kalau app ditutup total, notifikasi bisa telat. Biarkan tab tetap terbuka pas timer jalan.</p>
+
+    <p class="label">Data</p>
+    <div class="rows">
+      <div class="row"><span>Hapus semua data</span><button class="danger" id="btnWipe" type="button">Hapus</button></div>
+    </div>
+    <p class="note">Semua data cuma disimpan di HP kamu. Nggak ada server, nggak ada akun.</p>
+
+  </div>
+</section>
+
+<!-- ============ SHEET: STATISTIK ============ -->
+<section class="sheet" id="sheetStats" hidden aria-labelledby="statsTitle">
+  <div class="sheet__grab" aria-hidden="true"></div>
+  <div class="sheet__head">
+    <h2 id="statsTitle">Statistik</h2>
+    <button class="iconbtn" data-close type="button" aria-label="Tutup">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="sheet__body">
+    <div class="bigrow">
+      <div><b id="sTotal">0j 0m</b><small>total fokus</small></div>
+      <div><b id="sStreak">0</b><small>streak sekarang</small></div>
+      <div><b id="sBest">0</b><small>streak terbaik</small></div>
+    </div>
+
+    <p class="label">7 hari terakhir</p>
+    <div class="chart" id="chart"></div>
+
+    <p class="label">Riwayat</p>
+    <div class="rows" id="historyRows"></div>
+  </div>
+</section>
+
+<script src="js/app.js?v=5"></script>
+</body>
+</html>
