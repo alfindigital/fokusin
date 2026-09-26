@@ -2,12 +2,12 @@
  * Strategi: cache-first buat app shell (app kecil, offline wajib jalan),
  * network-first buat font Google. Naikkan CACHE tiap rilis.
  */
-const CACHE = 'fokusin-v5';
+const CACHE = 'fokusin-v6';
 const SHELL = [
   './',
   './index.html',
   './css/style.css?v=5',
-  './js/app.js?v=5',
+  './js/app.js?v=6',
   './manifest.webmanifest',
   './icons/icon-192.png',
   './icons/icon-512.png',

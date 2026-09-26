@@ -54,6 +54,10 @@ function load() {
     S.lastDay = d.lastDay || null;
     S.round = d.round || 1;
     S.task = d.task || '';
+    S.mode = ['focus', 'short', 'long'].includes(d.mode) ? d.mode : 'focus';
+    S.running = !!d.running;
+    S.endAt = typeof d.endAt === 'number' ? d.endAt : null;
+    S.remain = typeof d.remain === 'number' ? d.remain : null;
   } catch (_) { /* data korup, pakai default */ }
 }
 
@@ -64,6 +68,7 @@ function save() {
       totalSessions: S.totalSessions, streak: S.streak,
       bestStreak: S.bestStreak, lastDay: S.lastDay,
       round: S.round, task: S.task,
+      mode: S.mode, running: S.running, endAt: S.endAt, remain: S.remain,
     }));
   } catch (_) { /* storage penuh atau private mode */ }
 }
@@ -324,7 +329,7 @@ function start() {
   lastSec = -1;
   wakeOn();
   setEyebrow(S.mode === 'focus' ? 'run' : 'break');
-  render();
+  render(); save();
   raf = requestAnimationFrame(loop);
 }
 
@@ -645,11 +650,30 @@ window.addEventListener('beforeunload', e => {
 /* ---------------- boot ---------------- */
 
 load();
-S.remain = durOf(S.mode);
 el.taskInput.value = S.task;
 applyTheme();
 paintSettings();
-render();
+
+/* Timer survive reload: deadline disimpan, posisi dihitung ulang dari jam
+   sistem. Sesi yang habis saat halaman tertutup langsung diproses. */
+if (S.running && typeof S.endAt === 'number') {
+  if (S.endAt > Date.now()) {
+    setEyebrow(S.mode === 'focus' ? 'run' : 'break');
+    render();
+    wakeOn();
+    raf = requestAnimationFrame(loop);
+  } else {
+    S.remain = 0;
+    complete();
+  }
+} else {
+  S.running = false;
+  S.endAt = null;
+  if (typeof S.remain !== 'number' || S.remain <= 0 || S.remain > durOf(S.mode)) {
+    S.remain = durOf(S.mode);
+  }
+  render();
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
