@@ -92,15 +92,20 @@ Dijalankan di browser sungguhan lewat Chrome DevTools, dibaca dari DOM asli, buk
 |---|---|
 | Akurasi timer | meleset **0 detik** (lokal dan live HTTPS) |
 | Sesi penuh sampai kelar | auto pindah ke Rehat, statistik tercatat, streak naik |
+| Sesi 25 menit penuh | kelar normal, tetap akurat |
 | Lewati tidak dihitung | jumlah sesi tidak berubah |
+| Reload saat timer jalan | lanjut dari deadline tersimpan, bukan reset |
+| Sesi habis saat tab tertutup | tercatat & auto pindah mode begitu dibuka lagi |
 | Reload saat offline | CSS+JS dari cache, timer tetap jalan |
+| Notifikasi | izin & notifikasi "Sesi fokus kelar" terkirim |
+| Getar | `navigator.vibrate` terpanggil dengan pola yang benar |
 | Kontras WCAG AA | gelap 8.01:1, terang 6.21:1 |
 | Konsol | nol error, nol warning |
 | Nol scroll horizontal | 390x844, 360x640, 820x1180 |
 | Wake Lock | berhasil di HTTPS |
 
-**Belum diuji, jujur:** HP asli (yang dites emulasi viewport Chrome desktop), iOS Safari,
-notifikasi web, getar, sesi 25 menit penuh (yang dites 1 menit).
+**Belum diuji, jujur:** HP asli (yang dites emulasi viewport Chrome desktop dan
+Chromium headless), iOS Safari.
 
 ## Deploy sendiri
 
